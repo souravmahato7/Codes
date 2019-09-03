@@ -1,13 +1,178 @@
-﻿##################################################################
+##################################################################
 #Author: Sourav Mahato
 #Created Date:08/26/2019
+#Modified Date:09/04/2019
 #Purpose: Script for Quality Check for SCOM database movement
-#How to run: PS C:\Script> .\QCForSCOMDatabaseMovement.ps1 -OldSQLServerOpsDB SCSMSQL2016 -SQLServerOpsDB SQL2016 -OldSQLServerOpsDW SCSMSQL2016 -SQLServerOpsDW SQL2016 -OpsMgrDB OperationsManager -OpsMgrDW OperationsManagerDW
+#How to run: You just need to provide the information as asked in the forms
 ##################################################################
 ###### Function for SQL Query
 #######################################################################
 
-param([String] $OldSQLServerOpsDB,$SQLServerOpsDB, $OldSQLServerOpsDW, $SQLServerOpsDW, $OpsMgrDB, $OpsMgrDW )
+function button ($title,$OldSQLServerOpsDB,$SQLServerOpsDB,$OldSQLServerOpsDW,$SQLServerOpsDW,$OpsMgrDB,$OpsMgrDW) {
+
+###################Load Assembly for creating form & button######
+
+[void][System.Reflection.Assembly]::LoadWithPartialName( “System.Windows.Forms”)
+[void][System.Reflection.Assembly]::LoadWithPartialName( “Microsoft.VisualBasic”)
+
+#####Define the form size & placement
+
+$form = New-Object “System.Windows.Forms.Form”;
+$form.Width = 500;
+$form.Height = 400;
+$form.Text = $title;
+$form.StartPosition = [System.Windows.Forms.FormStartPosition]::CenterScreen;
+
+##############Define text label1
+$textLabel1 = New-Object “System.Windows.Forms.Label”;
+$textLabel1.Left = 25;
+$textLabel1.Top = 15;
+
+$textLabel1.Text = $OldSQLServerOpsDB;
+
+##############Define text label2
+
+$textLabel2 = New-Object “System.Windows.Forms.Label”;
+$textLabel2.Left = 25;
+$textLabel2.Top = 50;
+
+$textLabel2.Text = $SQLServerOpsDB;
+
+##############Define text label3
+
+$textLabel3 = New-Object “System.Windows.Forms.Label”;
+$textLabel3.Left = 25;
+$textLabel3.Top = 85;
+
+$textLabel3.Text = $OldSQLServerOpsDW;
+
+##############Define text label4
+$textLabel4 = New-Object “System.Windows.Forms.Label”;
+$textLabel4.Left = 25;
+$textLabel4.Top = 130;
+
+$textLabel4.Text = $SQLServerOpsDW;
+
+##############Define text label5
+
+$textLabel5 = New-Object “System.Windows.Forms.Label”;
+$textLabel5.Left = 25;
+$textLabel5.Top = 165;
+
+$textLabel5.Text = $OpsMgrDB;
+
+##############Define text label6
+
+$textLabel6 = New-Object “System.Windows.Forms.Label”;
+$textLabel6.Left = 25;
+$textLabel6.Top = 200;
+
+$textLabel6.Text = $OpsMgrDW;
+
+############Define text box1 for input
+$textBox1 = New-Object “System.Windows.Forms.TextBox”;
+$textBox1.Left = 150;
+$textBox1.Top = 10;
+$textBox1.width = 200;
+
+############Define text box2 for input
+
+$textBox2 = New-Object “System.Windows.Forms.TextBox”;
+$textBox2.Left = 150;
+$textBox2.Top = 50;
+$textBox2.width = 200;
+
+############Define text box3 for input
+
+$textBox3 = New-Object “System.Windows.Forms.TextBox”;
+$textBox3.Left = 150;
+$textBox3.Top = 90;
+$textBox3.width = 200;
+
+############Define text box4 for input
+$textBox4 = New-Object “System.Windows.Forms.TextBox”;
+$textBox4.Left = 150;
+$textBox4.Top = 130;
+$textBox4.width = 200;
+
+############Define text box5 for input
+
+$textBox5 = New-Object “System.Windows.Forms.TextBox”;
+$textBox5.Left = 150;
+$textBox5.Top = 170;
+$textBox5.width = 200;
+
+############Define text box6 for input
+
+$textBox6 = New-Object “System.Windows.Forms.TextBox”;
+$textBox6.Left = 150;
+$textBox6.Top = 210;
+$textBox6.width = 200;
+
+#############Define default values for the input boxes
+$defaultValue = “”
+$textBox1.Text = $defaultValue;
+$textBox2.Text = $defaultValue;
+$textBox3.Text = $defaultValue;
+$textBox4.Text = $defaultValue;
+$textBox5.Text = $defaultValue;
+$textBox6.Text = $defaultValue;
+
+#############define OK button
+$button = New-Object “System.Windows.Forms.Button”;
+$button.Left = 360;
+$button.Top = 230;
+$button.Width = 50;
+$button.Text = “Ok”;
+
+############# This is when you have to close the form after getting values
+$eventHandler = [System.EventHandler]{
+$textBox1.Text;
+$textBox2.Text;
+$textBox3.Text;
+$textBox4.Text;
+$textBox5.Text;
+$textBox6.Text;
+$form.Close();};
+
+$button.Add_Click($eventHandler) ;
+
+#############Add controls to all the above objects defined
+$form.Controls.Add($button);
+$form.Controls.Add($textLabel1);
+$form.Controls.Add($textLabel2);
+$form.Controls.Add($textLabel3);
+$form.Controls.Add($textLabel4);
+$form.Controls.Add($textLabel5);
+$form.Controls.Add($textLabel6);
+$form.Controls.Add($textBox1);
+$form.Controls.Add($textBox2);
+$form.Controls.Add($textBox3);
+$form.Controls.Add($textBox4);
+$form.Controls.Add($textBox5);
+$form.Controls.Add($textBox6);
+$ret = $form.ShowDialog();
+
+#################return values
+
+return $textBox1.Text, $textBox2.Text, $textBox3.Text, $textBox4.Text, $textBox5.Text, $textBox6.Text
+
+}
+
+$return= button “SCOM Database Movement QC Script” “Enter Old SQL Server for Ops DB” “Enter New SQL Server for Ops DB” “Enter Old SQL Server for Ops DW” "Enter New SQL Server for Ops DW" "Enter Ops DB Name" "Enter DW DB Name"
+
+Write-Host "The Old SQL Server Name for OperationsManager DB is "$return[0] -ForegroundColor Magenta
+
+Write-Host "The New SQL Server Name for OperationsManager DB is "$return[1] -ForegroundColor Magenta
+
+Write-Host "The Old SQL Server Name for OperationsManagerDW DB is "$return[2] -ForegroundColor Magenta
+
+Write-Host "The New SQL Server Name for OperationsManagerDW DB is "$return[3] -ForegroundColor Magenta
+
+Write-Host "The Database name for OperationsManager DB is "$return[4] -ForegroundColor Magenta
+
+Write-Host "The Database Name for OperationsManagerDW DB is "$return[5] -ForegroundColor Magenta
+
 
 Function Get-SQLTable($strSQLServer, $strSQLDatabase, $strSQLCommand, $intSQLTimeout = 3000)
 {	
@@ -146,11 +311,11 @@ Write-Host "Validating the Table $ManagementGroup if the SQL server is updated c
 Write-Host "
 "
 
-$Result1 = Get-SqlTable $SQLServerOpsDB $OpsMgrDB $cmd1
+$Result1 = Get-SqlTable $return[1] $return[4] $cmd1
 
 $DBServerName1 = $Result1.SQLServerName_43FB076F_7970_4C86_6DCA_8BD541F45E3A
 
-If ($DBServerName1 -eq $SQLServerOpsDB)
+If ($DBServerName1 -eq $return[1])
 
 { Write-Host "Table $ManagementGroup is updated as $DBServerName1" -ForegroundColor Green
 Write-Host "
@@ -168,11 +333,11 @@ Write-Host "Validating the Table $AppMonitoring if the SQL server is updated cor
 Write-Host "
 "
 
-$Result2 = Get-SqlTable $SQLServerOpsDB $OpsMgrDB $cmd2
+$Result2 = Get-SqlTable $return[1] $return[4] $cmd2
 
 $DBServerName2 = $Result2.MainDatabaseServerName_5C00C79B_6B71_6EEE_4ADE_80C11F84527A
 
-If ($DBServerName2 -eq $SQLServerOpsDB)
+If ($DBServerName2 -eq $return[1])
 
 { Write-Host "Table $AppMonitoring is updated as $DBServerName2" -ForegroundColor Green
 Write-Host "
@@ -190,11 +355,11 @@ Write-Host "Validating the Table $DataWarehouse if the SQL server is updated cor
 Write-Host "
 "
 
-$Result3 = Get-SqlTable $SQLServerOpsDB $OpsMgrDB $cmd3
+$Result3 = Get-SqlTable $return[1] $return[4] $cmd3
 
 $DBServerName3 = $Result3.MainDatabaseServerName_2C77AA48_DB0A_5D69_F8FF_20E48F3AED0F
 
-If ($DBServerName3 -eq $SQLServerOpsDB)
+If ($DBServerName3 -eq $return[1])
 
 { Write-Host "Table $DataWarehouse is updated as $DBServerName3" -ForegroundColor Green
 Write-Host "
@@ -212,11 +377,11 @@ Write-Host "Validating the Table $DataWarehouse_Log if the SQL server is updated
 Write-Host "
 "
 
-$Result4 = Get-SqlTable $SQLServerOpsDB $OpsMgrDB $cmd4
+$Result4 = Get-SqlTable $return[1] $return[4] $cmd4
 
 $DBServerName4 = $Result4.Post_MainDatabaseServerName_2C77AA48_DB0A_5D69_F8FF_20E48F3AED0F
 
-If ($DBServerName4 -eq $SQLServerOpsDB)
+If ($DBServerName4 -eq $return[1])
 
 { Write-Host "Table $DataWarehouse_Log is updated as $DBServerName4" -ForegroundColor Green
 Write-Host "
@@ -234,11 +399,11 @@ Write-Host "Validating the Table $AppMonitoringDW if the SQL server is updated c
 Write-Host "
 "
 
-$Result5 = Get-SqlTable $SQLServerOpsDB $OpsMgrDB $cmd5
+$Result5 = Get-SqlTable $return[1] $return[4] $cmd5
 
 $DBServerName5 = $Result5.MainDatabaseServerName_5C00C79B_6B71_6EEE_4ADE_80C11F84527A
 
-If ($DBServerName5 -eq $SQLServerOpsDB)
+If ($DBServerName5 -eq $return[1])
 
 { Write-Host "Table $AppMonitoringDW is updated as $DBServerName5" -ForegroundColor Green
 Write-Host "
@@ -256,11 +421,11 @@ Write-Host "Validating the Table $AppMonitoringDW_Log if the SQL server is updat
 Write-Host "
 "
 
-$Result6 = Get-SqlTable $SQLServerOpsDB $OpsMgrDB $cmd6
+$Result6 = Get-SqlTable $return[1] $return[4] $cmd6
 
 $DBServerName6 = $Result6.Post_MainDatabaseServerName_5C00C79B_6B71_6EEE_4ADE_80C11F84527A
 
-If ($DBServerName6 -eq $SQLServerOpsDB)
+If ($DBServerName6 -eq $return[1])
 
 { Write-Host "Table $AppMonitoringDW_Log is updated as $DBServerName6" -ForegroundColor Green
 Write-Host "
@@ -278,11 +443,11 @@ Write-Host "Validating the Table $OpsMgrDWWatcher if the SQL server is updated c
 Write-Host "
 "
 
-$Result7 = Get-SqlTable $SQLServerOpsDB $OpsMgrDB $cmd7
+$Result7 = Get-SqlTable $return[1] $return[4] $cmd7
 
 $DBServerName7 = $Result7.DatabaseServerName_69FBB0E2_A6E8_0483_7993_B7AB180A7889
 
-If ($DBServerName7 -eq $SQLServerOpsDB)
+If ($DBServerName7 -eq $return[1])
 
 { Write-Host "Table $OpsMgrDWWatcher is updated as $DBServerName7" -ForegroundColor Green
 Write-Host "
@@ -306,11 +471,11 @@ Write-Host "
 
 $cmd8 = "Select ServerName from dbo.MemberDatabase"
 
-$Result8 = Get-SqlTable $SQLServerOpsDW $OpsMgrDW $cmd8
+$Result8 = Get-SqlTable $return[3] $return[5] $cmd8
 
 $DBServerName8 = $Result8.ServerName
 
-If ($DBServerName8 -eq $SQLServerOpsDW)
+If ($DBServerName8 -eq $return[3])
 
 { Write-Host "Table dbo.MemberDatabase is updated as $DBServerName8" -ForegroundColor Green
 Write-Host "
@@ -346,7 +511,7 @@ Write-Host "
 
     $CurrentOpsDBRegistry = Get-SQLServerOpsDBRegistry $MS
 
-    If ($CurrentSQLServerOpsDB -eq $SQLServerOpsDB)
+    If ($CurrentSQLServerOpsDB -eq $return[1])
 
     {
         Write-Host "For Management Server $MS, Registry value for DatabaseServerName is updated correctly with the value as $CurrentSQLServerOpsDB in the path [SOFTWARE\Microsoft\Microsoft Operations Manager\3.0\Setup]" -ForegroundColor Green
@@ -365,7 +530,7 @@ Write-Host "
 
     }
 
-    If ($CurrentSQLServerOpsDW -eq $SQLServerOpsDW)
+    If ($CurrentSQLServerOpsDW -eq $return[3])
 
     {
         Write-Host "For Management Server $MS, Registry value for DataWarehouseDBServerName is updated correctly with the value as $CurrentSQLServerOpsDW in the path [SOFTWARE\Microsoft\Microsoft Operations Manager\3.0\Setup]" -ForegroundColor Green
@@ -384,7 +549,7 @@ Write-Host "
     }
 
 
-    If ($CurrentOpsDBRegistry -eq $SQLServerOpsDB)
+    If ($CurrentOpsDBRegistry -eq $return[1])
 
     {
         Write-Host "For Management Server $MS, Registry value for DatabaseServerName is updated correctly with the value as $CurrentOpsDBRegistry in the path [SOFTWARE\Microsoft\System Center\2010\Common\Database]" -ForegroundColor Green
@@ -417,13 +582,13 @@ $ConfigFIlepath = "\\$MS\$Drive$" + $Path
 
 $ConfigFIle = "$ConfigFIlepath\ConfigService.config"
 
-#$SQLServerOpsDB = 'sql2016'
-$B ='"'+"$SQLServerOpsDB"+'"'
+#$return[1] = 'sql2016'
+$B ='"'+$return[1]+'"'
 $C = $B
 $CurrentSQLServerOpsDB = "Value=$C"
 
 
-#$ConfigInfo = Get-ChildItem -Path "$ConfigFIlepath" -Include "configservice.config" -Recurse | Select-String -Pattern "$SQLServerOpsDB"
+#$ConfigInfo = Get-ChildItem -Path "$ConfigFIlepath" -Include "configservice.config" -Recurse | Select-String -Pattern "$return[1]"
 
 $ConfigInfo = Get-ChildItem -Path "$ConfigFIlepath" -Include "configservice.config" -Recurse | Select-String -Pattern 'Setting Name="ServerName" Value='
 
@@ -463,7 +628,7 @@ $CLRUpdate = "sp_configure 'show advanced options', 1;
  GO
  RECONFIGURE;
  GO"
-Get-SqlTable $SQLServerOpsDB $OpsMgrDB $CLRUpdate#>
+Get-SqlTable $return[1] $return[4] $CLRUpdate#>
 
 
 #######################################################################
@@ -474,9 +639,15 @@ Write-Host "Validating if SQL broker service is enable or not" -ForegroundColor 
 Write-Host "
 "
 
-$cmd9 = "SELECT is_broker_enabled FROM sys.databases WHERE name='$OpsMgrDB'"
+$OperationsManagerDB =''+$return[4]+''
 
-$Result9 = Get-SqlTable $SQLServerOpsDB $OpsMgrDB $cmd9
+$cmd9 = "SELECT is_broker_enabled FROM sys.databases WHERE name = '$OperationsManagerDB'"
+
+#Write-Host $cmd9
+
+$Result9 = Get-SqlTable $return[1] $return[4] $cmd9
+
+Write-Host $Result9
 
 $Result9.is_broker_enabled
 
