@@ -1,19 +1,197 @@
-﻿##################################################################
-#Author: Sourav Mahato
-#Created Date:08/25/2019
-#Purpose: Script for SCOM database movement
-#How to run: PS C:\Script> .\QCForSCOMDatabaseMovement.ps1 -OldSQLServerOpsDB SCSMSQL2016 -SQLServerOpsDB SQL2016 -OldSQLServerOpsDW SCSMSQL2016 -SQLServerOpsDW SQL2016 -OpsMgrDB OperationsManager -OpsMgrDW OperationsManagerDW
+##################################################################
+# Author: Sourav Mahato
+# Created Date:08/25/2019
+# Modified Date: 09/07/2019
+# Purpose: Script for SCOM database movement
+# How to run: You just need to provide the information as asked in the forms
+
 #Precaution: Beofre running this Script, please make sure that following pre-requsites are in place
 
 #1. Full Backup of SCOM DBs
 #2. Restore the databases on new SQL instances
 #3. SQL login account should have been created for SDK, Reader, Writer, DAS accunts in New database instance
 #4. Local admin rights on Management servers and SA rights on SQL DBs (OperationsManager and OperationsManagerDW)
+
+
+##################################################################
+
+function button ($title,$CurrentSQLServerOpsDB,$FutureSQLServerOpsDB,$CurrentSQLServerOpsDW,$FutureSQLServerOpsDW,$OpsMgrDBName,$OpsMgrDWName) {
+
+###################Load Assembly for creating form & button######
+
+[void][System.Reflection.Assembly]::LoadWithPartialName( “System.Windows.Forms”)
+[void][System.Reflection.Assembly]::LoadWithPartialName( “Microsoft.VisualBasic”)
+
+#####Define the form size & placement
+
+$form = New-Object “System.Windows.Forms.Form”;
+$form.Width = 500;
+$form.Height = 400;
+$form.Text = $title;
+$form.StartPosition = [System.Windows.Forms.FormStartPosition]::CenterScreen;
+
+##############Define text label1
+$textLabel1 = New-Object “System.Windows.Forms.Label”;
+$textLabel1.Left = 25;
+$textLabel1.Top = 15;
+
+$textLabel1.Text = $CurrentSQLServerOpsDB;
+
+##############Define text label2
+
+$textLabel2 = New-Object “System.Windows.Forms.Label”;
+$textLabel2.Left = 25;
+$textLabel2.Top = 50;
+
+$textLabel2.Text = $FutureSQLServerOpsDB;
+
+##############Define text label3
+
+$textLabel3 = New-Object “System.Windows.Forms.Label”;
+$textLabel3.Left = 25;
+$textLabel3.Top = 85;
+
+$textLabel3.Text = $CurrentSQLServerOpsDW;
+
+##############Define text label4
+$textLabel4 = New-Object “System.Windows.Forms.Label”;
+$textLabel4.Left = 25;
+$textLabel4.Top = 130;
+
+$textLabel4.Text = $FutureSQLServerOpsDW;
+
+##############Define text label5
+
+$textLabel5 = New-Object “System.Windows.Forms.Label”;
+$textLabel5.Left = 25;
+$textLabel5.Top = 165;
+
+$textLabel5.Text = $OpsMgrDBName;
+
+##############Define text label6
+
+$textLabel6 = New-Object “System.Windows.Forms.Label”;
+$textLabel6.Left = 25;
+$textLabel6.Top = 200;
+
+$textLabel6.Text = $OpsMgrDWName;
+
+############Define text box1 for input
+$textBox1 = New-Object “System.Windows.Forms.TextBox”;
+$textBox1.Left = 150;
+$textBox1.Top = 10;
+$textBox1.width = 200;
+
+############Define text box2 for input
+
+$textBox2 = New-Object “System.Windows.Forms.TextBox”;
+$textBox2.Left = 150;
+$textBox2.Top = 50;
+$textBox2.width = 200;
+
+############Define text box3 for input
+
+$textBox3 = New-Object “System.Windows.Forms.TextBox”;
+$textBox3.Left = 150;
+$textBox3.Top = 90;
+$textBox3.width = 200;
+
+############Define text box4 for input
+$textBox4 = New-Object “System.Windows.Forms.TextBox”;
+$textBox4.Left = 150;
+$textBox4.Top = 130;
+$textBox4.width = 200;
+
+############Define text box5 for input
+
+$textBox5 = New-Object “System.Windows.Forms.TextBox”;
+$textBox5.Left = 150;
+$textBox5.Top = 170;
+$textBox5.width = 200;
+
+############Define text box6 for input
+
+$textBox6 = New-Object “System.Windows.Forms.TextBox”;
+$textBox6.Left = 150;
+$textBox6.Top = 210;
+$textBox6.width = 200;
+
+#############Define default values for the input boxes
+$defaultValue = “”
+$textBox1.Text = $defaultValue;
+$textBox2.Text = $defaultValue;
+$textBox3.Text = $defaultValue;
+$textBox4.Text = $defaultValue;
+$textBox5.Text = $defaultValue;
+$textBox6.Text = $defaultValue;
+
+#############define OK button
+$button = New-Object “System.Windows.Forms.Button”;
+$button.Left = 360;
+$button.Top = 230;
+$button.Width = 50;
+$button.Text = “Ok”;
+
+############# This is when you have to close the form after getting values
+$eventHandler = [System.EventHandler]{
+$textBox1.Text;
+$textBox2.Text;
+$textBox3.Text;
+$textBox4.Text;
+$textBox5.Text;
+$textBox6.Text;
+$form.Close();};
+
+$button.Add_Click($eventHandler) ;
+
+#############Add controls to all the above objects defined
+$form.Controls.Add($button);
+$form.Controls.Add($textLabel1);
+$form.Controls.Add($textLabel2);
+$form.Controls.Add($textLabel3);
+$form.Controls.Add($textLabel4);
+$form.Controls.Add($textLabel5);
+$form.Controls.Add($textLabel6);
+$form.Controls.Add($textBox1);
+$form.Controls.Add($textBox2);
+$form.Controls.Add($textBox3);
+$form.Controls.Add($textBox4);
+$form.Controls.Add($textBox5);
+$form.Controls.Add($textBox6);
+$ret = $form.ShowDialog();
+
+#################return values
+
+return $textBox1.Text, $textBox2.Text, $textBox3.Text, $textBox4.Text, $textBox5.Text, $textBox6.Text
+
+}
+
+$return= button “SCOM Database Movement QC Script” “Enter Old SQL Server for Ops DB” “Enter New SQL Server for Ops DB” “Enter Old SQL Server for Ops DW” "Enter New SQL Server for Ops DW" "Enter Ops DB Name" "Enter DW DB Name"
+
+Write-Host "The Old SQL Server Name for OperationsManager DB is "$return[0] -ForegroundColor Magenta
+
+Write-Host "The New SQL Server Name for OperationsManager DB is "$return[1] -ForegroundColor Magenta
+
+Write-Host "The Old SQL Server Name for OperationsManagerDW DB is "$return[2] -ForegroundColor Magenta
+
+Write-Host "The New SQL Server Name for OperationsManagerDW DB is "$return[3] -ForegroundColor Magenta
+
+Write-Host "The Database name for OperationsManager DB is "$return[4] -ForegroundColor Magenta
+
+Write-Host "The Database Name for OperationsManagerDW DB is "$return[5] -ForegroundColor Magenta
+
+$OldSQLServerOpsDB = $return[0]
+$SQLServerOpsDB = $return[1]
+$OldSQLServerOpsDW = $return[2]
+$SQLServerOpsDW = $return[3]
+$OpsMgrDB = $return[4]
+$OpsMgrDW = $return[5]
+
+
 ##################################################################
 ###### Function for SQL Query
 #######################################################################
 
-param([String] $OldSQLServerOpsDB,$SQLServerOpsDB, $OldSQLServerOpsDW, $SQLServerOpsDW, $OpsMgrDB, $OpsMgrDW )
 
 Function Get-SQLTable($strSQLServer, $strSQLDatabase, $strSQLCommand, $intSQLTimeout = 3000)
 {	
@@ -163,6 +341,8 @@ $Table6 = 'dbo.MT_Microsoft$SystemCenter$DataWarehouse$AppMonitoring_Log'
 
 $Table7 = 'dbo.MT_Microsoft$SystemCenter$OpsMgrDWWatcher'
 
+Write-Host "Updating the Tables at Database $SQLServerOpsDB" -ForegroundColor Yellow
+
 $cmd = "Update $Table1 set SQLServerName_43FB076F_7970_4C86_6DCA_8BD541F45E3A = '$SQLServerOpsDB'
 where SQLServerName_43FB076F_7970_4C86_6DCA_8BD541F45E3A = '$OldSQLServerOpsDB'
 
@@ -198,6 +378,7 @@ Get-SqlTable $SQLServerOpsDB $OpsMgrDB $cmd
 # To Update the OperationsManagerDW database Tables as needed
 #######################################################################
 
+Write-Host "Updating the Table 'dbo.MemberDatabase' at Database $SQLServerOpsDW" -ForegroundColor Yellow
 
 $cmd1 = "Update dbo.MemberDatabase
 set ServerName = '$SQLServerOpsDW'
@@ -219,11 +400,17 @@ $MSs = $ManagementServers.Displayname
 Foreach ($MS in $MSs)
 
 {
+
+Write-Host "Updating the Registry on Management Server $MS for $SQLServerOpsDB" -ForegroundColor Yellow
+
     Update-SQLServerOpsDB $MS $SQLServerOpsDB
+
+Write-Host "Updating the Registry on Management Server $MS for $SQLServerOpsDW" -ForegroundColor Yellow
 
     Update-SQLServerOpsDW $MS $SQLServerOpsDW
 
     $CurrentSQLServerOpsDB = Get-SQLServerOpsDB $MS
+
     $CurrentSQLServerOpsDW = Get-SQLServerOpsDW $MS
 
     If ($CurrentSQLServerOpsDB -eq $SQLServerOpsDB -and $CurrentSQLServerOpsDW -eq $SQLServerOpsDW)
@@ -232,16 +419,32 @@ Foreach ($MS in $MSs)
         Write-Host "Registry updated successfullly" -ForegroundColor Green
 
 
+$Date = Get-Date
+$Day = $Date.Day
+$Month = $Date.Month
+$Year = $Date.Year
+
+#$B ='"'+$return[1]+'"'
+
+$FormatDate = "$day-$Month-$Year"
 
 $FullPath = Get-Installationpath $MS
+
 $Split = $FullPath.split(':')
+
 $Drive = $Split[0]
+
 $Path = $SPlit[1]
 
 $ConfigFIlepath = "\\$MS\$Drive$" + $Path
 
 $ConfigFIle = "$ConfigFIlepath\ConfigService.config"
-Copy-Item -Path $ConfigFIle -Destination "$ConfigFIlepath\configservice_Backup.config"
+
+Write-Host "Config file is getting backed up for the Management Server $MS" -ForegroundColor Yellow
+
+Copy-Item -Path $ConfigFIle -Destination "$ConfigFIlepath\configservice_$FormatDate.config"
+
+Write-Host "Config file is getting updated with new Database Server Name as $SQLServerOpsDB in the Management Server $MS" -ForegroundColor Yellow
 
 (Get-Content "$ConfigFIlepath\configservice.config") | ForEach-Object {$_ -Replace "$OldSQLServerOpsDB", "$SQLServerOpsDB"} | Set-Content -Path "$ConfigFIlepath\configservice.config" -Force
 
@@ -279,8 +482,10 @@ Get-SqlTable $SQLServerOpsDB $OpsMgrDB $CLRUpdate#>
 # To Update the SQL Broker Service
 #######################################################################
 
-$BrokerUpdate = "ALTER DATABASE OperationsManager SET SINGLE_USER WITH ROLLBACK IMMEDIATE
-ALTER DATABASE OperationsManager SET ENABLE_BROKER
-ALTER DATABASE OperationsManager SET MULTI_USER"
+Write-Host "Broker Service will be updated now in the new Database Server $SQLServerOpsDB for database $OpsMgrDB" -ForegroundColor Yellow
+
+$BrokerUpdate = "ALTER DATABASE $OpsMgrDB SET SINGLE_USER WITH ROLLBACK IMMEDIATE
+ALTER DATABASE $OpsMgrDB SET ENABLE_BROKER
+ALTER DATABASE $OpsMgrDB SET MULTI_USER"
 
 Get-SqlTable $SQLServerOpsDB $OpsMgrDB $BrokerUpdate
