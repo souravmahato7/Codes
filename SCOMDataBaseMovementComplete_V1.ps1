@@ -1,10 +1,25 @@
 ##################################################################
-#Author: Sourav Mahato
-#Created Date:08/25/2019
+# Author: Sourav Mahato
+# Created Date:08/25/2019
+# Modified date: 08/07/2019
 #Purpose: Script for SCOM database movement
 #How to run: You just need to provide the information as asked in the forms
 
-#You need to copy the dbatools-master folder from the below link and extract it to a share folder. That share folder location we need to pass under the "Enter the Path Name"
+# First you need to create a share
+#You need to copy the dbatools-master.zip file from the below link and copy it to a share folder. Now extract the file in the same location.
+
+# https://github.com/ctrlbold/dbatools/archive/master.zip
+
+# Inside the code: I have defined it as "$Path\dbatools-master\dbatools-master\dbatools.psd1", It should be in this format else script may fail.
+
+#for example:
+# My share is "\\SQL2016\SOftware\SQLDBBackUP" and I have copied the tools-master.zip file in that share. 
+# And I have extract it here "\\SQL2016\SOftware\SQLDBBackUP". So the complete location would be like as
+
+# \\SQL2016\SOftware\SQLDBBackUP\dbatools-master\dbatools-master\dbatools.psd1
+
+# In the form I am just giving it as \\SQL2016\SOftware\SQLDBBackUP
+
 
  # https://github.com/ctrlbold/dbatools/archive/master.zip
 
@@ -18,7 +33,6 @@
 #5. Config file will be updated on all the MSs
 #6. WIll update the respective tables
 #7. Will enable broker services
-
 
 ##################################################################
 
