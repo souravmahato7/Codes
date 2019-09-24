@@ -2,6 +2,13 @@
 #Author: Sourav Mahato
 #Created Date:09/25/2019
 #Purpose: Script for grooming the data for Orchestrator database
+
+# Please save the Script in the following location: C:\Software
+
+# Also please donwload the module SCOrchestratorManagement.psm1 and kept it in the following location: C:\Software
+
+# https://gallery.technet.microsoft.com/scriptcenter/SCOrchestratorManagementpsm-5c16093f
+
 #How to run: .\Runbooks.PS1 -MS SCORCHRB.Domain.COM -SQLServer SQLServername -SQLDB SQLDAtabaseName
 ##################################################################
 ###### Function for SQL Query
