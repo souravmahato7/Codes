@@ -11,6 +11,7 @@
 #2. Restore the databases on new SQL instances
 #3. SQL login account should have been created for SDK, Reader, Writer, DAS accunts in New database instance
 #4. Local admin rights on Management servers and SA rights on SQL DBs (OperationsManager and OperationsManagerDW)
+#5. Please provide fqdn of the sql server name if it is standalone server and you are using default instance.
 
 
 ##################################################################
