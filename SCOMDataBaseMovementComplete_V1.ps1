@@ -33,6 +33,9 @@
 #5. Config file will be updated on all the MSs
 #6. WIll update the respective tables
 #7. Will enable broker services
+#8. Please provide fqdn of the sql server name if it is standalone server and you are using default instance.
+
+##################################################################
 
 ##################################################################
 
