@@ -1,14 +1,14 @@
-##################################################################
-#Author: Sourav Mahato
-#Created Date:02/10/2021
-#Modified Date:
-#Purpose: Script for Config file and Registry Check for SCOM Management Servers
-#How to run: Save the Script as .PS1 and run it from a SCOM Management Server.
-##################################################################
+############################################################################################
+#Author: Sourav Mahato									   #
+#Created Date:02/10/2021								   #
+#Modified Date:02/11/2021								   #
+#Purpose: Script for Config file and Registry Check for SCOM Management Servers	           #
+#How to run: Save the Script as .PS1 and run it from a SCOM Management Server.             #
+############################################################################################
 
-#######################################################################
-### FUNCTIONS FOR TO check the Recommended registry tweaks for SCOM 2016 and 2019 management servers  
-#######################################################################
+######################################################################################################
+### FUNCTIONS FOR TO check the Recommended registry tweaks for SCOM 2016 and 2019 management servers # 
+######################################################################################################
 
 function Get-StateQueueItems($ms)
 {
@@ -118,7 +118,7 @@ function Get-Installationpath ($MS)
 
 
 #################################################################################################
-###Code start from here
+###Code start from here 									#
 #################################################################################################
 
 $cur = Get-location
@@ -148,7 +148,7 @@ $cur = Get-location
         }
     
 #######################################################################
-# To validate Registry keys if they are consistent or not
+# To validate Registry keys if they are consistent or not 	      #
 #######################################################################
 
 Import-Module OperationsManager
@@ -162,7 +162,7 @@ Foreach ($MS in $MSs)
 {
   
     #######################################################################
-    # Validating the Key StateQueueItems
+    # Validating the Key StateQueueItems 				  #
     #######################################################################
 
     $StateQueueItems = Get-StateQueueItems $MS
@@ -193,7 +193,7 @@ Foreach ($MS in $MSs)
     }
 
     #######################################################################
-    # Validating the Key PersistenceCheckpointDepthMaximum
+    # Validating the Key PersistenceCheckpointDepthMaximum 		  #
     #######################################################################
 
     $PersistenceCheckpointDepthMaximum = Get-PersistenceCheckpointDepthMaximum $MS
@@ -224,7 +224,7 @@ Foreach ($MS in $MSs)
     }
 
     #######################################################################
-    # Validating the Key DALInitiateClearPool
+    # Validating the Key DALInitiateClearPool 				  #
     #######################################################################
 
     $DALInitiateClearPool = Get-DALInitiateClearPool $MS
@@ -256,7 +256,7 @@ Foreach ($MS in $MSs)
 
 
     #######################################################################
-    # Validating the Key DALInitiateClearPoolSeconds
+    # Validating the Key DALInitiateClearPoolSeconds 			  #
     #######################################################################
 
     $DALInitiateClearPoolSeconds = Get-DALInitiateClearPoolSeconds $MS
@@ -287,7 +287,7 @@ Foreach ($MS in $MSs)
     }
 
     #######################################################################
-    # Validating the Key GroupCalcPollingIntervalMilliseconds
+    # Validating the Key GroupCalcPollingIntervalMilliseconds 		  #
     #######################################################################
 
     $GroupCalcPollingIntervalMilliseconds = Get-GroupCalcPollingIntervalMilliseconds $MS
@@ -318,7 +318,7 @@ Foreach ($MS in $MSs)
     }
 
     #######################################################################
-    # Validating the Key CommandTimeoutSeconds
+    # Validating the Key CommandTimeoutSeconds 				  #
     #######################################################################
 
     $CommandTimeoutSeconds = Get-CommandTimeoutSeconds $MS
@@ -349,7 +349,7 @@ Foreach ($MS in $MSs)
     }
 
     #######################################################################
-    # Validating the Key DeploymentCommandTimeoutSeconds
+    # Validating the Key DeploymentCommandTimeoutSeconds		  #
     #######################################################################
 
     $DeploymentCommandTimeoutSeconds = Get-DeploymentCommandTimeoutSeconds $MS
@@ -380,7 +380,7 @@ Foreach ($MS in $MSs)
     }
 
     #######################################################################
-    # Validating the Key PoolLeaseRequestPeriodSeconds
+    # Validating the Key PoolLeaseRequestPeriodSeconds			  #
     #######################################################################
 
     $PoolLeaseRequestPeriodSeconds = Get-PoolLeaseRequestPeriodSeconds $MS
@@ -412,7 +412,7 @@ Foreach ($MS in $MSs)
 
 
     #######################################################################
-    # Validating the Key PoolNetworkLatencySeconds
+    # Validating the Key PoolNetworkLatencySeconds		          #
     #######################################################################
 
     $PoolNetworkLatencySeconds = Get-PoolNetworkLatencySeconds $MS
@@ -443,7 +443,7 @@ Foreach ($MS in $MSs)
     }
 
         #######################################################################
-        # To validate the Management Server config file is consistent or not
+        # To validate the Management Server config file is consistent or not  #
         #######################################################################
 
 
@@ -485,9 +485,9 @@ Foreach ($MS in $MSs)
         }
         }
 
-        ########################################################################################################
+        ###########################################################################################################
         # To validate the Management Server config file informations for GetEntityChangeDeltaList in config file  #
-        ########################################################################################################
+        ###########################################################################################################
 
         Write-Host "Checking on SCOM Management Server $MS for GetEntityChangeDeltaList in config file" -ForegroundColor Yellow
         Write-Host "*********************************************************************************************************************************************************************" -ForegroundColor White
@@ -510,9 +510,9 @@ Foreach ($MS in $MSs)
         }
         Write-Host "*********************************************************************************************************************************************************************" -ForegroundColor White
 
-        ########################################################################################################
+        #####################################################################################################################
         # To validate the Management Server config file informations for SnapshotSyncManagedEntityBatchSize in config file  #
-        ########################################################################################################
+        #####################################################################################################################
 
         Write-Host "Checking on SCOM Management Server $MS for SnapshotSyncManagedEntityBatchSize in config file" -ForegroundColor Yellow
         Write-Host "*********************************************************************************************************************************************************************" -ForegroundColor White
@@ -586,8 +586,89 @@ Foreach ($MS in $MSs)
         }
         Write-Host "*********************************************************************************************************************************************************************" -ForegroundColor White
 
+
+        ##########################################################################################################################
+        # To validate the Management Server config file informations for EndSnapshot in config file  				 #
+        ##########################################################################################################################
+
+        Write-Host "Checking on SCOM Management Server $MS for EndSnapshot in config file" -ForegroundColor Yellow
+        Write-Host "*********************************************************************************************************************************************************************" -ForegroundColor White
+
+        $EndSnapshot = Get-ChildItem -Path "$ConfigFIlepath" -Include "configservice.config" -Recurse | Select-String -Pattern 'Operation Name="EndSnapshot" TimeoutSeconds='
+
+        If ($EndSnapshot -match '900')
+
+        {
+        Write-host "SCOM Management Server $MS is having the default value $EndSnapshot" -ForegroundColor Green
+        "SCOM Management Server $MS is having the default value $EndSnapshot" >>"$cur\log.txt"
+        "*********************************************************************************************************************************************************************" >>"$cur\log.txt"
+        }
+
+        Else
+
+        {
+        Write-host "SCOM Management Server $MS is having the Modified value as $EndSnapshot" -ForegroundColor Red
+        "SCOM Management Server $MS is having the Modified value as $EndSnapshot" >>"$cur\DiffValuelog.txt"
+        "*********************************************************************************************************************************************************************" >>"$cur\DiffValuelog.txt"
+        }
+        Write-Host "*********************************************************************************************************************************************************************" -ForegroundColor White
+
+
+        ##########################################################################################################################
+        # To validate the Management Server config file informations for WriteConfigurationSnapshotBatch in config file 	 #
+        ##########################################################################################################################
+
+        Write-Host "Checking on SCOM Management Server $MS for WriteConfigurationSnapshotBatch in config file" -ForegroundColor Yellow
+        Write-Host "*********************************************************************************************************************************************************************" -ForegroundColor White
+
+        $WriteConfigurationSnapshotBatch = Get-ChildItem -Path "$ConfigFIlepath" -Include "configservice.config" -Recurse | Select-String -Pattern 'Operation Name="WriteConfigurationSnapshotBatch" TimeoutSeconds='
+
+        If ($WriteConfigurationSnapshotBatch -match '300')
+
+        {
+        Write-host "SCOM Management Server $MS is having the default value $WriteConfigurationSnapshotBatch" -ForegroundColor Green
+        "SCOM Management Server $MS is having the default value $WriteConfigurationSnapshotBatch" >>"$cur\log.txt"
+        "*********************************************************************************************************************************************************************" >>"$cur\log.txt"
+        }
+
+        Else
+
+        {
+        Write-host "SCOM Management Server $MS is having the Modified value as $WriteConfigurationSnapshotBatch" -ForegroundColor Red
+        "SCOM Management Server $MS is having the Modified value as $WriteConfigurationSnapshotBatch" >>"$cur\DiffValuelog.txt"
+        "*********************************************************************************************************************************************************************" >>"$cur\DiffValuelog.txt"
+        }
+        Write-Host "*********************************************************************************************************************************************************************" -ForegroundColor White
+
+
+        ##########################################################################################################################
+        # To validate the Management Server config file informations for SnapshotSynchronization in config file  		 #
+        ##########################################################################################################################
+
+        Write-Host "Checking on SCOM Management Server $MS for SnapshotSynchronization in config file" -ForegroundColor Yellow
+        Write-Host "*********************************************************************************************************************************************************************" -ForegroundColor White
+
+        $SnapshotSynchronization = Get-ChildItem -Path "$ConfigFIlepath" -Include "configservice.config" -Recurse | Select-String -Pattern 'WorkItem Name="SnapshotSynchronization" Enabled="true" Shared="true" FrequencySeconds="86400" TimeoutSeconds='
+
+        If ($SnapshotSynchronization -match '1800')
+
+        {
+        Write-host "SCOM Management Server $MS is having the default value $SnapshotSynchronization" -ForegroundColor Green
+        "SCOM Management Server $MS is having the default value $SnapshotSynchronization" >>"$cur\log.txt"
+        "*********************************************************************************************************************************************************************" >>"$cur\log.txt"
+        }
+
+        Else
+
+        {
+        Write-host "SCOM Management Server $MS is having the Modified value as $SnapshotSynchronization" -ForegroundColor Red
+        "SCOM Management Server $MS is having the Modified value as $SnapshotSynchronization" >>"$cur\DiffValuelog.txt"
+        "*********************************************************************************************************************************************************************" >>"$cur\DiffValuelog.txt"
+        }
+        Write-Host "*********************************************************************************************************************************************************************" -ForegroundColor White
+
 }
         ##########################################################################################################################
-        # Getting the Resourcepool details  #
+        # Getting the Resourcepool details  											 #
         ##########################################################################################################################
         Get-SCOMResourcePool | % { $_.DisplayName; "`t$($_.Members)" } >>"$Cur\RPDetails.txt"
