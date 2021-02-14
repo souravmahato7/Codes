@@ -236,6 +236,8 @@ Foreach ($MS in $MSs)
 
     }
 
+Write-Host "Restarting the Config service on $MS" -ForegroundColor Yellow
+
 Get-Service -ComputerName $MS -Name cshost | Restart-Service
 
 }
