@@ -7,7 +7,7 @@
 
 # Also please donwload the module SCOrchestratorManagement.psm1 and kept it in the following location: C:\Software
 
-# https://gallery.technet.microsoft.com/scriptcenter/SCOrchestratorManagementpsm-5c16093f
+# https://github.com/souravmahato7/Codes/raw/SCORCH/SCOrchestratorManagement.zip
 
 #How to run: .\Runbooks.PS1 -MS SCORCHRB.Domain.COM -SQLServer SQLServername -SQLDB SQLDAtabaseName
 ##################################################################
