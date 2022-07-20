@@ -56,7 +56,7 @@ function Get-DALInitiateClearPoolSeconds($ms)
 function Get-GroupCalcPollingIntervalMilliseconds($ms)
 {
 	$hklm = 2147483650
-	$regPath = "SOFTWARE\Microsoft\Microsoft Operations Manager\3.0"
+	$regPath = "SOFTWARE\Microsoft\System Center\2010\Common"
 	$regValue = "GroupCalcPollingIntervalMilliseconds"
 	
 	$regprov = [wmiclass]"\\$ms\root\default:stdRegProv"
